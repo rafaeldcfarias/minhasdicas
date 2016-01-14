@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/ibApagarCartao"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@android:drawable/ic_menu_delete" />
+
+    <TextView
+        android:id="@+id/tvCartaoTituloLista"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/ibApagarCartao"
+        android:layout_toStartOf="@+id/ibApagarCartao"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="titulo"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/tvCartaoConteudoLista"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/tvCartaoTituloLista"
+        android:layout_toLeftOf="@+id/ibApagarCartao"
+        android:layout_toStartOf="@+id/ibApagarCartao"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="conteudo"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+</RelativeLayout>
