@@ -33,7 +33,7 @@ public class Dica implements Serializable {
     }
 
     public void setTitulo(String titulo) {
-        this.titulo = titulo;
+        this.titulo = titulo.trim();
     }
 
     public String getConteudo() {
@@ -41,7 +41,7 @@ public class Dica implements Serializable {
     }
 
     public void setConteudo(String conteudo) {
-        this.conteudo = conteudo;
+        this.conteudo = conteudo.trim();
     }
 
 

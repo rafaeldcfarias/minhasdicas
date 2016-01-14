@@ -2,6 +2,7 @@ package br.com.rafaeldcfarias.minhasdicas.adapter;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +12,9 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import br.com.devlooper.study.R;
-import br.com.devlooper.study.model.Dica;
-import br.com.devlooper.study.service.DicaService;
+import br.com.rafaeldcfarias.minhasdicas.R;
+import br.com.rafaeldcfarias.minhasdicas.model.Dica;
+import br.com.rafaeldcfarias.minhasdicas.service.DicaService;
 
 /**
  * Created by rk on 29/06/2015.
@@ -58,15 +59,33 @@ public class DicaAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 String mensagem = context.getString(R.string.msg_dica_excluida);
-                if (dicaService.apagar(dicas.get(position)) == 1) {
+                final Dica aRemover = dicas.get(position);
+                if (dicaService.apagar(aRemover.getId()) == 1) {
                     dicas.remove(position);
                 } else {
                     mensagem = context.getString(R.string.msg_problema_excluir_dica);
                 }
                 notifyDataSetChanged();
-                Toast.makeText(context, mensagem, Toast.LENGTH_LONG).show();
+                Snackbar.make(parent, mensagem, Snackbar.LENGTH_LONG)
+                        .setAction(context.getString(R.string.label_desfazer), new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                aRemover.setId(0);
+                                dicaService.salvar(aRemover);
+                                dicas.add(position, aRemover);
+                                notifyDataSetChanged();
+                            }
+                        }).show();
             }
         });
         return convertView;
+    }
+
+    public List<Dica> getDicas() {
+        return dicas;
+    }
+
+    public void setDicas(List<Dica> dicas) {
+        this.dicas = dicas;
     }
 }

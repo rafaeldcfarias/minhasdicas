@@ -12,8 +12,14 @@
     tools:context=".activity.DicasActivity"
     tools:showIn="@layout/activity_dicas">
 
-    <TextView
+    <ListView
+        android:id="@+id/listViewCartoes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:dividerHeight="1dp"
+        android:choiceMode="multipleChoice"
+        />
 </RelativeLayout>

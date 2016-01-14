@@ -7,16 +7,17 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
 
-import br.com.devlooper.study.R;
-import br.com.devlooper.study.activity.DicasActivity;
-import br.com.devlooper.study.activity.MainActivity;
-import br.com.devlooper.study.activity.SettingsActivity;
 import br.com.rafaeldcfarias.minhasdicas.R;
+import br.com.rafaeldcfarias.minhasdicas.activity.DicasActivity;
+import br.com.rafaeldcfarias.minhasdicas.activity.CadastroActivity;
+import br.com.rafaeldcfarias.minhasdicas.activity.SettingsActivity;
 import br.com.rafaeldcfarias.minhasdicas.infra.DBHelper;
 import br.com.rafaeldcfarias.minhasdicas.model.Dica;
 import br.com.rafaeldcfarias.minhasdicas.service.DicaService;
@@ -37,7 +38,9 @@ public class DicaReceiver extends BroadcastReceiver {
         Random random = new Random();
         Dica sorteado = new Dica();
         sorteado.setId((random.nextInt(((int) dicaService.count())) + 1));
-        sorteado = dicaService.buscar(sorteado);
+        Log.d("sorteado", sorteado.toString());
+        // TODO: 02/01/2016 testar se existe pelo menos uma dica cadastrada
+        sorteado = dicaService.buscar(sorteado.getId());
         dicas.add(sorteado);
         if (dicas.size() == MAXDICAS) {
             dicas.remove();
@@ -52,7 +55,7 @@ public class DicaReceiver extends BroadcastReceiver {
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, resultIntent, 0);
         Intent resultIntentSettings = new Intent(context, SettingsActivity.class);
         PendingIntent pendingIntentSettings = PendingIntent.getActivity(context, 0, resultIntentSettings, 0);
-        Intent resultIntentCadastro = new Intent(context, MainActivity.class);
+        Intent resultIntentCadastro = new Intent(context, CadastroActivity.class);
         PendingIntent pendingIntentCadastro = PendingIntent.getActivity(context, 0, resultIntentCadastro, 0);
 
 
@@ -65,13 +68,12 @@ public class DicaReceiver extends BroadcastReceiver {
         builder.setContentText(sorteado.getConteudo());
         builder.setContentIntent(pendingIntent);
         builder.setAutoCancel(true);
-        builder.addAction(android.R.drawable.ic_menu_manage, context.getString(R.string.title_activity_settings), pendingIntentSettings);
-        builder.addAction(android.R.drawable.ic_menu_add, context.getString(R.string.action_adicionar_dica), pendingIntentCadastro);
+        builder.addAction(R.drawable.ic_action_settings61, context.getString(R.string.title_activity_settings), pendingIntentSettings);
+        builder.addAction(R.drawable.ic_content_add, context.getString(R.string.action_adicionar_dica), pendingIntentCadastro);
         builder.setStyle(inboxStyle);
         builder.setPriority(Notification.PRIORITY_MAX);
-        builder.setColor(context.getColor(R.color.colorPrimaryDark));
+        builder.setColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
         builder.setTicker(context.getString(R.string.label_dica) + sorteado.getId());
         manager.notify(1002, builder.build());
-
     }
 }

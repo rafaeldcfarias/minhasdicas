@@ -34,23 +34,56 @@ public class DicaRepository {
         return db.insert(TB_NAME, null, contentValues);
     }
 
-    public int apagar(Dica dica) {
-        return this.db.delete(TB_NAME, "_id = ?", new String[]{String.valueOf(dica.getId())});
+    public int apagar(long id) {
+        return this.db.delete(TB_NAME, "_id = ?", new String[]{String.valueOf(id)});
     }
 
-    public Dica buscar(Dica dica) {
-
+    public Dica buscar(long id) {
+        Dica dica = null;
         Cursor cursor = null;
-        cursor = db.query(TB_NAME, TB_COLUMNS, " _id = ?", new String[]{String.valueOf(dica.getId())}, null, null, null);
+        cursor = db.query(TB_NAME, TB_COLUMNS, " _id = ?", new String[]{String.valueOf(id)}, null, null, null);
         if (cursor.moveToFirst()) {
+            dica = new Dica();
+            dica.setId(cursor.getLong(0));
             dica.setTitulo(cursor.getString(1));
             dica.setConteudo(cursor.getString(2));
-        } else {
-            dica = null;
         }
 
         fecharCursor(cursor);
         return dica;
+    }
+
+    public Dica buscarPorTitulo(String titulo) {
+        Dica dica = null;
+        Cursor cursor = null;
+        cursor = db.query(TB_NAME, TB_COLUMNS, " titulo like ?", new String[]{titulo}, null, null, null);
+        if (cursor.moveToFirst()) {
+            dica = new Dica();
+            dica.setId(cursor.getLong(0));
+            dica.setTitulo(cursor.getString(1));
+            dica.setConteudo(cursor.getString(2));
+        }
+
+        fecharCursor(cursor);
+        return dica;
+    }
+
+    public List<Dica> buscarPorTituloOuConteudo(String chave) {
+        List<Dica> dicas = new ArrayList();
+        Cursor cursor = null;
+        cursor = db.query(TB_NAME, TB_COLUMNS, " titulo like ?||'%' or conteudo like ?||'%'", new String[]{chave, chave}, null, null, "titulo");
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                Dica dica = new Dica();
+                dica.setId(cursor.getLong(0));
+                dica.setTitulo(cursor.getString(1));
+                dica.setConteudo(cursor.getString(2));
+                dicas.add(dica);
+                cursor.moveToNext();
+            }
+        }
+        fecharCursor(cursor);
+        return dicas;
     }
 
     public List<Dica> buscarTodos() {
@@ -89,4 +122,5 @@ public class DicaRepository {
             cursor.close();
         }
     }
+
 }

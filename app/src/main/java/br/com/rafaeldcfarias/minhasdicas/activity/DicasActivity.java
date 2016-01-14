@@ -1,17 +1,33 @@
 package br.com.rafaeldcfarias.minhasdicas.activity;
 
+import android.app.SearchManager;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import br.com.rafaeldcfarias.minhasdicas.R;
+import br.com.rafaeldcfarias.minhasdicas.adapter.DicaAdapter;
+import br.com.rafaeldcfarias.minhasdicas.infra.DBHelper;
+import br.com.rafaeldcfarias.minhasdicas.infra.Preferences;
+import br.com.rafaeldcfarias.minhasdicas.service.DicaService;
 
 public class DicasActivity extends AppCompatActivity {
+
+    private ListView listViewDicas;
+    private DicaAdapter dicaAdapter;
+    private DicaService dicaService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,20 +36,52 @@ public class DicasActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.buttonAdicionar);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                startActivity(new Intent(DicasActivity.this, CadastroActivity.class));
+            }
+        });
+        DBHelper.setCONTEXT(getApplicationContext());
+        Preferences.initialize(getApplicationContext());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        dicaService = new DicaService();
+        dicaAdapter = new DicaAdapter(getApplicationContext(), null, dicaService);
+        listViewDicas = (ListView) findViewById(R.id.listViewCartoes);
+        TextView tvEmpty = new TextView(getApplicationContext());
+        tvEmpty.setText(getString(R.string.zero_dica_cadastrado));
+        listViewDicas.setEmptyView(tvEmpty);
+        listViewDicas.setAdapter(dicaAdapter);
+        listViewDicas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                startActivity(new Intent(DicasActivity.this, CadastroActivity.class).putExtra("dica_id", id));
             }
         });
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_dicas, menu);
+        // Associate searchable configuration with the SearchView
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            SearchManager searchManager =
+                    (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+            SearchView searchView =
+                    (SearchView) menu.findItem(R.id.search).getActionView();
+            searchView.setSearchableInfo(
+                    searchManager.getSearchableInfo(getComponentName()));
+            searchView.setIconifiedByDefault(false);
+        }
+
+
         return true;
     }
 
@@ -46,8 +94,13 @@ public class DicasActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            startActivity(new Intent(DicasActivity.this, SettingsActivity.class));
         }
+        if (id == R.id.action_creditos) {
+            startActivity(new Intent(DicasActivity.this, CreditosActivity.class));
+        }
+        if (id == R.id.search)
+            onSearchRequested();
 
         return super.onOptionsItemSelected(item);
     }
