@@ -6,15 +6,14 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import br.com.rafaeldcfarias.minhasdicas.R;
@@ -51,8 +50,8 @@ public class DicasActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         dicaService = new DicaService();
-        dicaAdapter = new DicaAdapter(getApplicationContext(), null, dicaService);
         listViewDicas = (ListView) findViewById(R.id.listViewCartoes);
+        dicaAdapter = new DicaAdapter(DicasActivity.this, null, dicaService);
         TextView tvEmpty = new TextView(getApplicationContext());
         tvEmpty.setText(getString(R.string.zero_dica_cadastrado));
         listViewDicas.setEmptyView(tvEmpty);
@@ -80,7 +79,6 @@ public class DicasActivity extends AppCompatActivity {
                     searchManager.getSearchableInfo(getComponentName()));
             searchView.setIconifiedByDefault(false);
         }
-
 
         return true;
     }

@@ -29,9 +29,8 @@ public class SearchResultActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search_result);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        handleIntent(getIntent());
         DBHelper.setCONTEXT(getApplicationContext());
-
+        dicaService = new DicaService();
         dicaAdapter = new DicaAdapter(getApplicationContext(), Collections.<Dica>emptyList(), dicaService);
         dicasResultado = (ListView) findViewById(R.id.listViewCartoes);
         dicasResultado.setAdapter(dicaAdapter);
@@ -41,10 +40,13 @@ public class SearchResultActivity extends AppCompatActivity {
                 startActivity(new Intent(SearchResultActivity.this, CadastroActivity.class).putExtra("dica_id", id));
             }
         });
+        handleIntent(getIntent());
+
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
+        setIntent(intent);
         handleIntent(intent);
     }
 
