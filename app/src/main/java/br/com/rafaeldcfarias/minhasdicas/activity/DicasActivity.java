@@ -1,6 +1,8 @@
 package br.com.rafaeldcfarias.minhasdicas.activity;
 
+
 import android.app.SearchManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -71,13 +73,14 @@ public class DicasActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_dicas, menu);
         // Associate searchable configuration with the SearchView
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            SearchManager searchManager =
-                    (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-            SearchView searchView =
-                    (SearchView) menu.findItem(R.id.search).getActionView();
-            searchView.setSearchableInfo(
-                    searchManager.getSearchableInfo(getComponentName()));
-            searchView.setIconifiedByDefault(false);
+            SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+            SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+            // Assumes current activity is the searchable activity
+            ComponentName cn = new ComponentName(DicasActivity.this, SearchResultActivity.class);
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(cn));
+            searchView.setIconifiedByDefault(false); // Do not iconify the widget; expand it by default
+            searchView.setSubmitButtonEnabled(true);
+
         }
 
         return true;
@@ -97,8 +100,6 @@ public class DicasActivity extends AppCompatActivity {
         if (id == R.id.action_creditos) {
             startActivity(new Intent(DicasActivity.this, CreditosActivity.class));
         }
-        if (id == R.id.search)
-            onSearchRequested();
 
         return super.onOptionsItemSelected(item);
     }

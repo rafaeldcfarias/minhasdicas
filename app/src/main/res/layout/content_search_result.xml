@@ -12,4 +12,9 @@
     tools:context=".activity.SearchResultActivity"
     tools:showIn="@layout/activity_search_result">
 
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/lvResultadosPesquisa"
+         />
 </RelativeLayout>

@@ -9,7 +9,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import br.com.rafaeldcfarias.minhasdicas.R;
 import br.com.rafaeldcfarias.minhasdicas.adapter.DicaAdapter;
@@ -31,8 +32,8 @@ public class SearchResultActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         DBHelper.setCONTEXT(getApplicationContext());
         dicaService = new DicaService();
-        dicaAdapter = new DicaAdapter(getApplicationContext(), Collections.<Dica>emptyList(), dicaService);
-        dicasResultado = (ListView) findViewById(R.id.listViewCartoes);
+        dicaAdapter = new DicaAdapter(SearchResultActivity.this, new ArrayList<Dica>(), dicaService);
+        dicasResultado = (ListView) findViewById(R.id.lvResultadosPesquisa);
         dicasResultado.setAdapter(dicaAdapter);
         dicasResultado.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -30,6 +29,8 @@ public class DicaAdapter extends BaseAdapter {
         this.layoutInflater = LayoutInflater.from(context);
         if (dicas == null) {
             this.dicas = this.dicaService.buscarTodos();
+        } else {
+            setDicas(dicas);
         }
 
     }
