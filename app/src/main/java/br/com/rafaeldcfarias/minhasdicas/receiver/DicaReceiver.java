@@ -35,45 +35,42 @@ public class DicaReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         DBHelper.setCONTEXT(context);
         dicaService = new DicaService();
-        Random random = new Random();
-        Dica sorteado = new Dica();
-        sorteado.setId((random.nextInt(((int) dicaService.count())) + 1));
-        Log.d("sorteado", sorteado.toString());
-        // TODO: 02/01/2016 testar se existe pelo menos uma dica cadastrada
-        sorteado = dicaService.buscar(sorteado.getId());
-        dicas.add(sorteado);
-        if (dicas.size() == MAXDICAS) {
-            dicas.remove();
+        Dica sorteado = dicaService.sortearDica();
+        if (sorteado != null) {
+            dicas.add(sorteado);
+            if (dicas.size() == MAXDICAS) {
+                dicas.remove();
+            }
+
+            NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+            inboxStyle.setBigContentTitle(context.getString(R.string.label_dicas));
+            for (Dica dica : dicas) {
+                inboxStyle.addLine(dica.getTitulo() + " - " + dica.getConteudo());
+            }
+            Intent resultIntent = new Intent(context, DicasActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, resultIntent, 0);
+            Intent resultIntentSettings = new Intent(context, SettingsActivity.class);
+            PendingIntent pendingIntentSettings = PendingIntent.getActivity(context, 0, resultIntentSettings, 0);
+            Intent resultIntentCadastro = new Intent(context, CadastroActivity.class);
+            PendingIntent pendingIntentCadastro = PendingIntent.getActivity(context, 0, resultIntentCadastro, 0);
+
+
+            NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+            builder.setDefaults(Notification.DEFAULT_ALL);
+            builder.setSmallIcon(R.drawable.ic_stat_bright4);
+            builder.setVisibility(Notification.VISIBILITY_PUBLIC);
+            builder.setContentTitle(sorteado.getTitulo());
+            builder.setContentText(sorteado.getConteudo());
+            builder.setContentIntent(pendingIntent);
+            builder.setAutoCancel(true);
+            builder.addAction(R.drawable.ic_action_settings61, context.getString(R.string.title_activity_settings), pendingIntentSettings);
+            builder.addAction(R.drawable.ic_content_add, context.getString(R.string.action_adicionar_dica), pendingIntentCadastro);
+            builder.setStyle(inboxStyle);
+            builder.setPriority(Notification.PRIORITY_MAX);
+            builder.setColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
+            builder.setTicker(context.getString(R.string.label_dica) + sorteado.getId());
+            manager.notify(1002, builder.build());
         }
-
-        NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-        inboxStyle.setBigContentTitle(context.getString(R.string.label_dicas));
-        for (Dica dica : dicas) {
-            inboxStyle.addLine(dica.getTitulo() + " - " + dica.getConteudo());
-        }
-        Intent resultIntent = new Intent(context, DicasActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, resultIntent, 0);
-        Intent resultIntentSettings = new Intent(context, SettingsActivity.class);
-        PendingIntent pendingIntentSettings = PendingIntent.getActivity(context, 0, resultIntentSettings, 0);
-        Intent resultIntentCadastro = new Intent(context, CadastroActivity.class);
-        PendingIntent pendingIntentCadastro = PendingIntent.getActivity(context, 0, resultIntentCadastro, 0);
-
-
-        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-        builder.setDefaults(Notification.DEFAULT_ALL);
-        builder.setSmallIcon(R.drawable.ic_stat_bright4);
-        builder.setVisibility(Notification.VISIBILITY_PUBLIC);
-        builder.setContentTitle(sorteado.getTitulo());
-        builder.setContentText(sorteado.getConteudo());
-        builder.setContentIntent(pendingIntent);
-        builder.setAutoCancel(true);
-        builder.addAction(R.drawable.ic_action_settings61, context.getString(R.string.title_activity_settings), pendingIntentSettings);
-        builder.addAction(R.drawable.ic_content_add, context.getString(R.string.action_adicionar_dica), pendingIntentCadastro);
-        builder.setStyle(inboxStyle);
-        builder.setPriority(Notification.PRIORITY_MAX);
-        builder.setColor(ContextCompat.getColor(context, R.color.colorPrimaryDark));
-        builder.setTicker(context.getString(R.string.label_dica) + sorteado.getId());
-        manager.notify(1002, builder.build());
     }
 }

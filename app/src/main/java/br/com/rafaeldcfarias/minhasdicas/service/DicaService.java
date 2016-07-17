@@ -1,6 +1,7 @@
 package br.com.rafaeldcfarias.minhasdicas.service;
 
 import java.util.List;
+import java.util.Random;
 
 import br.com.rafaeldcfarias.minhasdicas.model.Dica;
 import br.com.rafaeldcfarias.minhasdicas.repository.DicaRepository;
@@ -41,5 +42,15 @@ public class DicaService {
 
     public List<Dica> buscarPorTituloOuConteudo(String chave) {
         return dicaRepository.buscarPorTituloOuConteudo(chave);
+    }
+
+    public Dica sortearDica() {
+        Random random = new Random();
+        Dica sorteado = null;
+        long count = count();
+        if (count > 0) {
+            sorteado = buscar(random.nextInt((int) count) + 1);
+        }
+        return sorteado;
     }
 }
