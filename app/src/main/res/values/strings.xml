@@ -31,4 +31,6 @@
     <string name="search_title">Pesquisar Dica</string>
     <string name="search_hint">Título ou conteúdo</string>
     <string name="title_activity_search_result">Pesquisa de dica</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>
